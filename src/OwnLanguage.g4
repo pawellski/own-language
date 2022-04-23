@@ -5,10 +5,43 @@ prog:		( stat? SEMICOLON )*
 
 stat:		INT_KW ID				#declareInt
 		| DOUBLE_KW ID				#declareDouble
-		| INT_KW ID EQ int_val			#assignInt
-		| DOUBLE_KW ID EQ double_val		#assignDouble
+		| INT_KW ID EQ expr0int			#initializeInt
+		| DOUBLE_KW ID EQ expr0dbl		#initializeDouble
+		| ID EQ expr0				#assign
 		| PRINT_KW value			#print
 		| SCAN_KW value				#scan
+	;
+
+expr0:		expr0int
+		| expr0dbl
+	;
+
+expr0int:	expr1int				#single0int
+		| expr1int ADD expr0int			#addint
+		| expr1int SUB expr0int			#subint
+	;
+
+expr1int:	expr2int				#single1int
+		| expr2int MUL expr1int			#mulint
+		| expr2int DIV expr1int			#divint
+	;
+
+expr2int:	int_val					#intval
+		| OPEN_BR expr0int CLOSE_BR		#bracketsint
+	;
+
+expr0dbl:	expr1dbl				#single0dbl
+		| expr1dbl ADD expr0dbl			#adddbl
+		| expr1dbl SUB expr0dbl			#subdbl
+	;
+
+expr1dbl:	expr2dbl				#single1dbl
+		| expr2dbl MUL expr1dbl			#muldbl
+		| expr2dbl DIV expr1dbl			#divdbl
+	;
+
+expr2dbl:	double_val				#doubleval
+		| OPEN_BR expr0dbl CLOSE_BR		#bracketsdbl
 	;
 
 int_val:	INT
@@ -52,6 +85,18 @@ INT:		'0'..'9'+
 	;
 
 EQ:		'='
+	;
+
+ADD:		'+'
+	;
+
+SUB:		'-'
+	;
+
+MUL:		'*'
+	;
+
+DIV:		'/'
 	;
 
 OPEN_BR:	'('
