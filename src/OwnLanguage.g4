@@ -45,11 +45,15 @@ expr2dbl:	double_val				#doubleval
 	;
 
 int_val:	INT					#int
-		| conv_toint value			#toint
+		| conv_toint INT			#intToInt
+		| conv_toint DOUBLE			#doubleToInt
+		| conv_toint ID				#idToInt
 	;
 
 double_val:	DOUBLE					#double
-		| conv_todouble value			#todouble
+		| conv_todouble INT			#intToDouble
+		| conv_todouble DOUBLE			#doubleToDouble
+		| conv_todouble ID			#idToDouble
 	;
 
 value:		ID
