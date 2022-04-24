@@ -44,12 +44,12 @@ expr2dbl:	double_val				#doubleval
 		| OPEN_BR expr0dbl CLOSE_BR		#bracketsdbl
 	;
 
-int_val:	INT
-		| toint value
+int_val:	INT					#int
+		| conv_toint value			#toint
 	;
 
-double_val:	DOUBLE
-		| todouble value
+double_val:	DOUBLE					#double
+		| conv_todouble value			#todouble
 	;
 
 value:		ID
@@ -57,10 +57,10 @@ value:		ID
 		| DOUBLE
 	;
 
-toint:		OPEN_BR INT_KW CLOSE_BR
+conv_toint:	OPEN_BR INT_KW CLOSE_BR
 	;
 
-todouble:	OPEN_BR DOUBLE_KW CLOSE_BR
+conv_todouble:	OPEN_BR DOUBLE_KW CLOSE_BR
 	;
 
 SCAN_KW:	'scan' 
