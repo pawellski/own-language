@@ -3,6 +3,14 @@ public class LLVMGenerator {
     private static StringBuilder mainText = new StringBuilder();
     private static int reg = 0;
 
+    public static void incReg() {
+        reg += 1;
+    }
+
+    public static int getReg() {
+        return reg;
+    }
+
     public static String generate() {
         StringBuilder text = new StringBuilder();
         text.append("\n");
