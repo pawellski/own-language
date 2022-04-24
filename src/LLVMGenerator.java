@@ -32,8 +32,20 @@ public class LLVMGenerator {
     }
 
    public static void assignDouble(String id, String value) {
-      mainText.append("store double ").append(value).append(", double* %")
+       mainText.append("store double ").append(value).append(", double* %")
         .append(id).append("\n");
     }
+
+    public static void sitofp(String id){
+        reg++;
+        mainText.append("%").append(reg).append(" = sitofp i32 ")
+        .append(id).append(" to double\n");
+   }
+
+   public static void fptosi(String id){
+       reg++;
+       mainText.append("%").append(reg).append(" = fptosi double ")
+        .append(id).append(" to i32\n");
+   }
 
 }
