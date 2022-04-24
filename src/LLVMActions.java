@@ -46,9 +46,20 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
+    public void exitDouble(OwnLanguageParser.DoubleContext ctx) {
+        stack.push( new Value(ctx.DOUBLE().getText(), VarType.DOUBLE));
+    }
+
+    @Override
     public void exitIntToInt(OwnLanguageParser.IntToIntContext ctx) {
         String valueName = "%" + LLVMGenerator.getReg();
         stack.push( new Value(valueName, VarType.INT) );
+    }
+
+    @Override
+    public void exitDoubleToDouble(OwnLanguageParser.DoubleToDoubleContext ctx) {
+        String valueName = "%" + LLVMGenerator.getReg();
+        stack.push( new Value(valueName, VarType.DOUBLE) );
     }
 
 	@Override
@@ -56,6 +67,13 @@ public class LLVMActions extends OwnLanguageBaseListener {
         LLVMGenerator.fptosi( ctx.DOUBLE().getText() );
         String valueName = "%" + LLVMGenerator.getReg();
         stack.push( new Value(valueName, VarType.INT) );
+    }
+
+    @Override
+    public void exitIntToDouble(OwnLanguageParser.IntToDoubleContext ctx) {
+        LLVMGenerator.sitofp( ctx.INT().getText() );
+        String valueName = "%" + LLVMGenerator.getReg();
+        stack.push( new Value(valueName, VarType.DOUBLE) );
     }
 
     @Override
@@ -70,6 +88,29 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 LLVMGenerator.fptosi(ID);
                 String valueName = "%" + LLVMGenerator.getReg();
                 stack.push( new Value(valueName, VarType.INT) );
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("mismatch type of variable ").append(ID)
+                    .append(" which is ").append(type);
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            error(ctx.getStart().getLine(), "undeclared variable " + ID);
+        }
+    }
+
+    @Override
+    public void exitIdToDouble(OwnLanguageParser.IdToDoubleContext ctx) {
+        String ID = ctx.ID().getText();
+        VarType type = variables.get(ID);
+        if (type != null) {
+            if (type == VarType.INT) {
+                LLVMGenerator.sitofp(ID);
+                String valueName = "%" + LLVMGenerator.getReg();
+                stack.push( new Value(valueName, VarType.DOUBLE) );
+            } else if (type == VarType.DOUBLE) {
+                String valueName = "%" + LLVMGenerator.getReg();
+                stack.push( new Value(valueName, VarType.DOUBLE) );
             } else {
                 StringBuilder msg = new StringBuilder();
                 msg.append("mismatch type of variable ").append(ID)
