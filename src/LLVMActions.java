@@ -90,8 +90,8 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 stack.push( new Value(valueName, VarType.INT) );
             } else {
                 StringBuilder msg = new StringBuilder();
-                msg.append("mismatch type of variable ").append(ID)
-                    .append(" which is ").append(type);
+                msg.append("mismatch type of variable \"").append(ID)
+                    .append("\" which is ").append(type);
                 error(ctx.getStart().getLine(), msg.toString());
             }
         } else {
@@ -113,8 +113,8 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 stack.push( new Value(valueName, VarType.DOUBLE) );
             } else {
                 StringBuilder msg = new StringBuilder();
-                msg.append("mismatch type of variable ").append(ID)
-                    .append(" which is ").append(type);
+                msg.append("mismatch type of variable \"").append(ID)
+                    .append("\" which is ").append(type);
                 error(ctx.getStart().getLine(), msg.toString());
             }
         } else {
