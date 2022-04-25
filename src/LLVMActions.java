@@ -261,6 +261,21 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
+    @Override
+    public void exitPrint(OwnLanguageParser.PrintContext ctx) {
+        Value v = stack.pop();
+        if (v.getType() != null) {
+            if (v.getType() == VarType.INT) {
+                LLVMGenerator.printfInt(v.getName());
+            }
+            else if (v.getType() == VarType.DOUBLE) {
+                LLVMGenerator.printfDouble(v.getName());
+            }
+        } else {
+            error(ctx.getStart().getLine(), "problem occurs");
+        }
+    }
+
     private void error(int line, String msg) {
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);

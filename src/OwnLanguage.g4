@@ -8,7 +8,7 @@ stat:		INT_KW ID				#declareInt
 		| INT_KW ID EQ expr0			#initializeInt
 		| DOUBLE_KW ID EQ expr0			#initializeDouble
 		| ID EQ expr0				#assign
-		| PRINT_KW value			#print
+		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
 		| SCAN_KW value				#scan
 	;
 

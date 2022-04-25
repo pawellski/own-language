@@ -125,4 +125,30 @@ public class LLVMGenerator {
             .append(", ").append(val1).append("\n");
     }
 
+    public static void loadInt(String id) {
+        reg++;
+        mainText.append("%").append(reg).append(" = load i32, i32* %")
+            .append(id).append("\n");
+    }
+
+    public static void loadDouble(String id) {
+        reg++;
+        mainText.append("%").append(reg).append(" = load double, double* %")
+            .append(id).append("\n");
+    }
+
+    public static void printfInt(String id) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 ")
+            .append(id).append(")\n");
+    }
+
+    public static void printfDouble(String id) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double ")
+            .append(id).append(")\n");
+    }
+
 }
