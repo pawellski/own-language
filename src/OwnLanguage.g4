@@ -9,7 +9,7 @@ stat:		INT_KW ID				#declareInt
 		| DOUBLE_KW ID EQ expr0			#initializeDouble
 		| ID EQ expr0				#assign
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
-		| SCAN_KW value				#scan
+		| SCAN_KW OPEN_BR ID CLOSE_BR		#scan
 	;
 
 expr0:		expr1					#single0

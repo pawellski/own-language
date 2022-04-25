@@ -26,7 +26,8 @@ public class LLVMGenerator {
             .append("declare i32 @__isoc99_scanf(i8*, ...)\n")
             .append("@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n")
             .append("@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n")
-            .append("@strs = constant [3 x i8] c\"%d\\00\"\n");
+            .append("@strs = constant [3 x i8] c\"%d\\00\"\n")
+            .append("@strsd = constant [4 x i8] c\"%lf\\00\"\n");
     }
 
     public static void declareInt(String id) {
@@ -148,6 +149,20 @@ public class LLVMGenerator {
         reg++;
         mainText.append("%").append(reg)
             .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double ")
+            .append(id).append(")\n");
+    }
+
+    public static void scanfInt(String id) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32* %")
+            .append(id).append(")\n");
+    }
+
+    public static void scanfDouble(String id) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strsd, i32 0, i32 0), double* %")
             .append(id).append(")\n");
     }
 

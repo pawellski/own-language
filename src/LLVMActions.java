@@ -298,6 +298,23 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
+    @Override
+    public void exitScan(OwnLanguageParser.ScanContext ctx) {
+        String ID = ctx.ID().getText();
+        VarType type = variables.get(ID);
+        if (type != null) {
+            if (type == VarType.INT) {
+                LLVMGenerator.scanfInt(ID);
+            } else if (type == VarType.DOUBLE) {
+                LLVMGenerator.scanfDouble(ID);
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("\" was not declared before");
+        }
+    }
+
     private void error(int line, String msg) {
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);
