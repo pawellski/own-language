@@ -70,13 +70,24 @@ public class LLVMActions extends OwnLanguageBaseListener {
     public void exitAssign(OwnLanguageParser.AssignContext ctx) {
         String ID = ctx.ID().getText();
         Value v = stack.pop();
-        variables.put(ID, v.getType());
-        if (v.getType() == VarType.INT) {
-            LLVMGenerator.declareInt(ID);
-            LLVMGenerator.assignInt(ID, v.getName());
-        } else if (v.getType() == VarType.DOUBLE) {
-            LLVMGenerator.declareDouble(ID);
-            LLVMGenerator.assignDouble(ID, v.getName());
+        VarType type = variables.get(ID);
+        if (type != null) {
+            if (type == v.getType()) {
+                if (type == VarType.INT)
+                    LLVMGenerator.assignInt(ID, v.getName());
+                else if (type == VarType.DOUBLE)
+                    LLVMGenerator.assignDouble(ID, v.getName());
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("incorrect assign - variable \"").append(ID).append("\" is ")
+                    .append(type).append(" and assign value is ").append(v.getType());
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("\" was not declared before");
+            error(ctx.getStart().getLine(), msg.toString());
         }
     }
 
