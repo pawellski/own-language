@@ -84,4 +84,16 @@ public class LLVMGenerator {
             .append(", ").append(val2).append("\n");
     }
 
+    public static void divInt(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = sdiv i32 ").append(val2)
+            .append(", ").append(val1).append("\n");
+    }
+
+    public static void divDouble(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = fdiv double ").append(val2)
+            .append(", ").append(val1).append("\n");
+    }
+
 }
