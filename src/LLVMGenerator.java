@@ -72,4 +72,16 @@ public class LLVMGenerator {
             .append(val2).append(", ").append(val1).append("\n");
     }
 
+    public static void mulInt(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = mul i32 ").append(val1)
+            .append(", ").append(val2).append("\n");
+    }
+
+    public static void mulDouble(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = fmul double ").append(val1)
+            .append(", ").append(val2).append("\n");
+    }
+
 }
