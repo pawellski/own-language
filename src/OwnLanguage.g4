@@ -5,43 +5,26 @@ prog:		( stat? SEMICOLON )*
 
 stat:		INT_KW ID				#declareInt
 		| DOUBLE_KW ID				#declareDouble
-		| INT_KW ID EQ expr0int			#initializeInt
-		| DOUBLE_KW ID EQ expr0dbl		#initializeDouble
+		| INT_KW ID EQ expr0			#initializeInt
+		| DOUBLE_KW ID EQ expr0			#initializeDouble
 		| ID EQ expr0				#assign
 		| PRINT_KW value			#print
 		| SCAN_KW value				#scan
 	;
 
-expr0:		expr0int
-		| expr0dbl
+expr0:		expr1					#single0
+		| expr1 ADD expr0			#add
+		| expr1 SUB expr0			#sub
 	;
 
-expr0int:	expr1int				#single0int
-		| expr1int ADD expr0int			#addint
-		| expr1int SUB expr0int			#subint
+expr1:		expr2					#single1
+		| expr2 MUL expr1			#mul
+		| expr2 DIV expr1			#div
 	;
 
-expr1int:	expr2int				#single1int
-		| expr2int MUL expr1int			#mulint
-		| expr2int DIV expr1int			#divint
-	;
-
-expr2int:	int_val					#intval
-		| OPEN_BR expr0int CLOSE_BR		#bracketsint
-	;
-
-expr0dbl:	expr1dbl				#single0dbl
-		| expr1dbl ADD expr0dbl			#adddbl
-		| expr1dbl SUB expr0dbl			#subdbl
-	;
-
-expr1dbl:	expr2dbl				#single1dbl
-		| expr2dbl MUL expr1dbl			#muldbl
-		| expr2dbl DIV expr1dbl			#divdbl
-	;
-
-expr2dbl:	double_val				#doubleval
-		| OPEN_BR expr0dbl CLOSE_BR		#bracketsdbl
+expr2:		int_val					#intval
+		| double_val				#doubleval
+		| OPEN_BR expr0 CLOSE_BR		#brackets
 	;
 
 int_val:	INT					#int
