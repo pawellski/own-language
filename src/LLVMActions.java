@@ -144,6 +144,28 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
+    @Override
+    public void exitSub(OwnLanguageParser.SubContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+        if (v1.getType() == v2.getType()) {
+            if (v1.getType() == VarType.INT) {
+                LLVMGenerator.subInt(v1.getName(), v2.getName());
+                String valueName = "%" + LLVMGenerator.getReg();
+                stack.push( new Value(valueName, VarType.INT) );
+            } else if (v1.getType() == VarType.DOUBLE) {
+                LLVMGenerator.subDouble(v1.getName(), v2.getName());
+                String valueName = "%" + LLVMGenerator.getReg();
+                stack.push( new Value(valueName, VarType.DOUBLE) );
+            }
+        }  else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("substraction type mismatch - ").append(v1.getType())
+                .append(" and ").append(v2.getType());
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
     private void error(int line, String msg){
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);

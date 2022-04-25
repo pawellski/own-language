@@ -60,4 +60,16 @@ public class LLVMGenerator {
             .append(val1).append(", ").append(val2).append("\n");
     }
 
+    public static void subInt(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = sub i32 ")
+            .append(val2).append(", ").append(val1).append("\n");
+    }
+
+    public static void subDouble(String val1, String val2){
+        reg++;
+        mainText.append("%").append(reg).append(" = fsub double ")
+            .append(val2).append(", ").append(val1).append("\n");
+    }
+
 }
