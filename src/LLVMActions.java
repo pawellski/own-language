@@ -136,7 +136,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 String valueName = "%" + LLVMGenerator.getReg();
                 stack.push( new Value(valueName, VarType.INT) );
             } else if (type == VarType.DOUBLE) {
-                LLVMGenerator.fptosi(ID);
+                LLVMGenerator.fptosiId(ID);
                 String valueName = "%" + LLVMGenerator.getReg();
                 stack.push( new Value(valueName, VarType.INT) );
             } else {
@@ -156,7 +156,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
         VarType type = variables.get(ID);
         if (type != null) {
             if (type == VarType.INT) {
-                LLVMGenerator.sitofp(ID);
+                LLVMGenerator.sitofpId(ID);
                 String valueName = "%" + LLVMGenerator.getReg();
                 stack.push( new Value(valueName, VarType.DOUBLE) );
             } else if (type == VarType.DOUBLE) {

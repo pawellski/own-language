@@ -53,10 +53,28 @@ public class LLVMGenerator {
             .append(id).append(" to double\n");
     }
 
+    public static void sitofpId(String id) {
+        reg++;
+        mainText.append("%").append(reg).append(" = load i32, i32* %")
+            .append(id).append("\n");
+        reg++;
+        mainText.append("%").append(reg).append(" = sitofp i32 %")
+            .append(reg-1).append(" to double\n");
+    }
+
     public static void fptosi(String id) {
         reg++;
         mainText.append("%").append(reg).append(" = fptosi double ")
             .append(id).append(" to i32\n");
+    }
+
+    public static void fptosiId(String id) {
+        reg++;
+        mainText.append("%").append(reg).append(" = load double, double* %")
+            .append(id).append("\n");
+        reg++;
+        mainText.append("%").append(reg).append(" = fptosi double %")
+            .append(reg-1).append(" to i32\n");
     }
 
     public static void addInt(String val1, String val2) {
