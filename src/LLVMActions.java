@@ -92,6 +92,28 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
+    public void exitId(OwnLanguageParser.IdContext ctx) {
+        String ID = ctx.ID().getText();
+        VarType type = variables.get(ID);
+        if (type != null) {
+            if (type == VarType.INT) {
+                LLVMGenerator.loadInt(ID);
+                String reg = "%" + Integer.toString(LLVMGenerator.getReg());
+                stack.push( new Value(reg, type));
+            } else if (type == VarType.DOUBLE) {
+                LLVMGenerator.loadDouble(ID);
+                String reg = "%" + Integer.toString(LLVMGenerator.getReg());
+                stack.push( new Value(reg, type));
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("\" was not declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+    @Override
     public void exitInt(OwnLanguageParser.IntContext ctx) {
         stack.push( new Value(ctx.INT().getText(), VarType.INT));
     }
