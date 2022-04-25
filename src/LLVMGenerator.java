@@ -12,10 +12,21 @@ public class LLVMGenerator {
     }
 
     public static String generate() {
+        configureHeader();
         StringBuilder text = new StringBuilder();
-        text.append("\n");
+        text.append(headerText.toString());
+        text.append("define i32 @main() nounwind{\n");
         text.append(mainText.toString());
+        text.append("ret i32 0 }\n");
         return text.toString();
+    }
+
+    private static void configureHeader() {
+        headerText.append("declare i32 @printf(i8*, ...)\n")
+            .append("declare i32 @__isoc99_scanf(i8*, ...)\n")
+            .append("@strpi = constant [4 x i8] c\"%d\\0A\\00\"\n")
+            .append("@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n")
+            .append("@strs = constant [3 x i8] c\"%d\\00\"\n");
     }
 
     public static void declareInt(String id) {
