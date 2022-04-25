@@ -261,9 +261,9 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
-    private void error(int line, String msg){
+    private void error(int line, String msg) {
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);
-   }
+    }
 
 }
