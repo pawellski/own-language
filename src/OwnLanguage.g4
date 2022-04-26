@@ -9,7 +9,7 @@ stat:		INT_KW ID				#declareInt
 		| DOUBLE_KW ID EQ expr0			#initializeDouble
 		| ID EQ expr0				#assign
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
-		| SCAN_KW OPEN_BR ID CLOSE_BR		#scan
+		| READ_KW OPEN_BR ID CLOSE_BR		#read
 	;
 
 expr0:		expr1					#single0
@@ -51,7 +51,7 @@ conv_toint:	OPEN_BR INT_KW CLOSE_BR
 conv_todouble:	OPEN_BR DOUBLE_KW CLOSE_BR
 	;
 
-SCAN_KW:	'scan' 
+READ_KW:	'read'
 	;
 
 PRINT_KW:	'print' 

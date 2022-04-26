@@ -313,7 +313,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitScan(OwnLanguageParser.ScanContext ctx) {
+    public void exitRead(OwnLanguageParser.ReadContext ctx) {
         String ID = ctx.ID().getText();
         VarType type = variables.get(ID);
         if (type != null) {
