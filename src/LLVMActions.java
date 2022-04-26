@@ -15,15 +15,29 @@ public class LLVMActions extends OwnLanguageBaseListener {
     @Override
     public void exitDeclareInt(OwnLanguageParser.DeclareIntContext ctx) {
         String ID = ctx.ID().getText();
-        variables.put(ID, VarType.INT);
-        LLVMGenerator.declareInt(ID);
+        VarType type = variables.get(ID);
+        if (type == null) {
+            variables.put(ID, VarType.INT);
+            LLVMGenerator.declareInt(ID);
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID).append("\" was declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
     }
 
     @Override
     public void exitDeclareDouble(OwnLanguageParser.DeclareDoubleContext ctx) {
         String ID = ctx.ID().getText();
-        variables.put(ID, VarType.DOUBLE);
-        LLVMGenerator.declareDouble(ID);
+        VarType type = variables.get(ID);
+        if (type == null) {
+            variables.put(ID, VarType.DOUBLE);
+            LLVMGenerator.declareDouble(ID);
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID).append("\" was declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
     }
 
     @Override
