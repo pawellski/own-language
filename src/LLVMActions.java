@@ -81,7 +81,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitAssign(OwnLanguageParser.AssignContext ctx) {
+    public void exitAssignId(OwnLanguageParser.AssignIdContext ctx) {
         String ID = ctx.ID().getText();
         Value v = stack.pop();
         VarType type = variables.get(ID);
@@ -313,7 +313,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitRead(OwnLanguageParser.ReadContext ctx) {
+    public void exitReadId(OwnLanguageParser.ReadIdContext ctx) {
         String ID = ctx.ID().getText();
         VarType type = variables.get(ID);
         if (type != null) {

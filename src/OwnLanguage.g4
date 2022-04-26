@@ -5,11 +5,15 @@ prog:		( stat? SEMICOLON )*
 
 stat:		INT_KW ID				#declareInt
 		| DOUBLE_KW ID				#declareDouble
+		| INT_KW arrayid			#declareArrayInt
+		| DOUBLE_KW arrayid			#declareArrayDouble
 		| INT_KW ID EQ expr0			#initializeInt
 		| DOUBLE_KW ID EQ expr0			#initializeDouble
-		| ID EQ expr0				#assign
+		| ID EQ expr0				#assignId
+		| arrayid EQ expr0			#assignArrayId
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
-		| READ_KW OPEN_BR ID CLOSE_BR		#read
+		| READ_KW OPEN_BR ID CLOSE_BR		#readId
+		| READ_KW OPEN_BR arrayid CLOSE_BR	#readArrayId
 	;
 
 expr0:		expr1					#single0
@@ -25,6 +29,7 @@ expr1:		expr2					#single1
 expr2:		int_val					#intval
 		| double_val				#doubleval
 		| ID					#id
+		| arrayid				#arrayId
 		| OPEN_BR expr0 CLOSE_BR		#brackets
 	;
 
@@ -40,9 +45,7 @@ double_val:	DOUBLE					#double
 		| conv_todouble ID			#idToDouble
 	;
 
-value:		ID
-		| INT
-		| DOUBLE
+arrayid:	ID OPEN_SBR INT CLOSE_SBR
 	;
 
 conv_toint:	OPEN_BR INT_KW CLOSE_BR
@@ -66,10 +69,10 @@ DOUBLE_KW:	'double'
 ID:		('a'..'z'|'A'..'Z')+
 	;
 
-DOUBLE:		INT '.' INT
+DOUBLE:		'-'?'0'..'9'+'.''0'..'9'+
 	;
 
-INT:		'0'..'9'+
+INT:		'-'?'0'..'9'+
 	;
 
 EQ:		'='
@@ -92,7 +95,13 @@ OPEN_BR:	'('
 
 CLOSE_BR:	')'
 	;
-	
+
+OPEN_SBR:	'['
+	;
+
+CLOSE_SBR:	']'
+	;
+
 SEMICOLON:	';'
 	;
 
