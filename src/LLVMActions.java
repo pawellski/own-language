@@ -5,6 +5,7 @@ import java.util.Stack;
 
 public class LLVMActions extends OwnLanguageBaseListener {
     private Map<String, VarType> variables = new HashMap<String, VarType>();
+    private Map<String, Integer> arrays = new HashMap<String, Integer>();
     private Stack<Value> stack = new Stack<Value>();
 
     @Override
@@ -33,6 +34,38 @@ public class LLVMActions extends OwnLanguageBaseListener {
         if (type == null) {
             variables.put(ID, VarType.DOUBLE);
             LLVMGenerator.declareDouble(ID);
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID).append("\" was declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+    @Override
+    public void exitDeclareArrayInt(OwnLanguageParser.DeclareArrayIntContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int size = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        VarType type = variables.get(ID);
+        if (type == null) {
+            variables.put(ID, VarType.INT);
+            arrays.put(ID, size);
+            LLVMGenerator.declareArrayInt(ID, size);
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID).append("\" was declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+    @Override
+    public void exitDeclareArrayDouble(OwnLanguageParser.DeclareArrayDoubleContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int size = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        VarType type = variables.get(ID);
+        if (type == null) {
+            variables.put(ID, VarType.DOUBLE);
+            arrays.put(ID, size);
+            LLVMGenerator.declareArrayDouble(ID, size);
         } else {
             StringBuilder msg = new StringBuilder();
             msg.append("variable \"").append(ID).append("\" was declared before");

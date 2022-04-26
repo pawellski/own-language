@@ -38,6 +38,16 @@ public class LLVMGenerator {
         mainText.append("%").append(id).append(" = alloca double\n");
     }
 
+    public static void declareArrayInt(String id, int size) {
+        mainText.append("%").append(id).append(" = alloca [")
+            .append(Integer.toString(size)).append(" x i32]\n");
+    }
+
+    public static void declareArrayDouble(String id, int size) {
+        mainText.append("%").append(id).append(" = alloca [")
+            .append(Integer.toString(size)).append(" x double]\n");
+    }
+
     public static void assignInt(String id, String value) {
         mainText.append("store i32 ").append(value).append(", i32* %")
             .append(id).append("\n");
