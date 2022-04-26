@@ -176,4 +176,18 @@ public class LLVMGenerator {
             .append(id).append(")\n");
     }
 
+    public static void getIntFromArray(String id, int size, int index) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = getelementptr inbounds [").append(Integer.toString(size)).append(" x i32], [").append(Integer.toString(size))
+            .append(" x i32]* %").append(id).append(", i64 0, i64 ").append(Integer.toString(index)).append("\n");
+    }
+
+    public static void getDoubleFromArray(String id, int size, int index) {
+        reg++;
+        mainText.append("%").append(reg)
+            .append(" = getelementptr inbounds [").append(Integer.toString(size)).append(" x double], [").append(Integer.toString(size))
+            .append(" x double]* %").append(id).append(", i64 0, i64 ").append(Integer.toString(index)).append("\n");
+    }
+
 }
