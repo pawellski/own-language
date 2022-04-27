@@ -114,6 +114,45 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
+    public void exitAssignArrayId(OwnLanguageParser.AssignArrayIdContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int index = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        Value v = stack.pop();
+        VarType type = variables.get(ID);
+        if (type != null) {
+            int size = arrays.get(ID);
+            if (index >= 0 && index < size) {
+                if (type == v.getType()) {
+                    if (type == VarType.INT) {
+                        LLVMGenerator.getIntFromArray(ID, size, index);
+                        LLVMGenerator.assignInt(Integer.toString(LLVMGenerator.getReg()), v.getName());
+                    }
+                    else if (type == VarType.DOUBLE) {
+                        LLVMGenerator.getDoubleFromArray(ID, size, index);
+                        LLVMGenerator.assignDouble(Integer.toString(LLVMGenerator.getReg()), v.getName());
+                    }
+                } else {
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("incorrect assign - variable \"").append(ID).append("[]\" is ")
+                        .append(type).append(" and assign value is ").append(v.getType());
+                    error(ctx.getStart().getLine(), msg.toString());
+                }
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("index ").append(index).append(" out of bound \"").
+                    append(ID).append("[").append(size).append("]\" array");
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("\" was not declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+
+    @Override
     public void exitAssignId(OwnLanguageParser.AssignIdContext ctx) {
         String ID = ctx.ID().getText();
         Value v = stack.pop();
