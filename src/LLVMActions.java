@@ -435,6 +435,37 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
+    @Override
+    public void exitReadArrayId(OwnLanguageParser.ReadArrayIdContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int index = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        VarType type = variables.get(ID);
+
+        if (type != null) {
+            int size = arrays.get(ID);
+            if (index >= 0 && index < size) {
+                if (type == VarType.INT) {
+                    LLVMGenerator.getIntFromArray(ID, size, index);
+                    String reg = Integer.toString(LLVMGenerator.getReg());
+                    LLVMGenerator.scanfInt(reg);
+                } else if (type == VarType.DOUBLE) {
+                    LLVMGenerator.getDoubleFromArray(ID, size, index);
+                    String reg = Integer.toString(LLVMGenerator.getReg());
+                    LLVMGenerator.scanfDouble(reg);
+                }
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("index ").append(index).append(" out of bound \"").
+                    append(ID).append("[").append(size).append("]\" array");
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("[]\" was not declared before");
+        }
+    }
+
     private void error(int line, String msg) {
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);
