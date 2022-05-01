@@ -14,12 +14,18 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitDeclareInt(OwnLanguageParser.DeclareIntContext ctx) {
+    public void exitDeclareVariable(OwnLanguageParser.DeclareVariableContext ctx) {
+        String variableType = ctx.type().getChild(0).getText();
         String ID = ctx.ID().getText();
         VarType type = variables.get(ID);
         if (type == null) {
-            variables.put(ID, VarType.INT);
-            LLVMGenerator.declareInt(ID);
+            if (variableType.equals("int")) {
+                variables.put(ID, VarType.INT);
+                LLVMGenerator.declareInt(ID);
+            } else if(variableType.equals("double")) {
+                variables.put(ID, VarType.DOUBLE);
+                LLVMGenerator.declareDouble(ID);
+            }
         } else {
             StringBuilder msg = new StringBuilder();
             msg.append("variable \"").append(ID).append("\" was declared before");
@@ -28,44 +34,21 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitDeclareDouble(OwnLanguageParser.DeclareDoubleContext ctx) {
-        String ID = ctx.ID().getText();
-        VarType type = variables.get(ID);
-        if (type == null) {
-            variables.put(ID, VarType.DOUBLE);
-            LLVMGenerator.declareDouble(ID);
-        } else {
-            StringBuilder msg = new StringBuilder();
-            msg.append("variable \"").append(ID).append("\" was declared before");
-            error(ctx.getStart().getLine(), msg.toString());
-        }
-    }
-
-    @Override
-    public void exitDeclareArrayInt(OwnLanguageParser.DeclareArrayIntContext ctx) {
+    public void exitDeclareArray(OwnLanguageParser.DeclareArrayContext ctx) {
+        String arrayType = ctx.type().getChild(0).getText();
         String ID = ctx.arrayid().getChild(0).getText();
         int size = Integer.parseInt(ctx.arrayid().getChild(2).getText());
         VarType type = variables.get(ID);
         if (type == null) {
-            variables.put(ID, VarType.INT);
-            arrays.put(ID, size);
-            LLVMGenerator.declareArrayInt(ID, size);
-        } else {
-            StringBuilder msg = new StringBuilder();
-            msg.append("variable \"").append(ID).append("\" was declared before");
-            error(ctx.getStart().getLine(), msg.toString());
-        }
-    }
-
-    @Override
-    public void exitDeclareArrayDouble(OwnLanguageParser.DeclareArrayDoubleContext ctx) {
-        String ID = ctx.arrayid().getChild(0).getText();
-        int size = Integer.parseInt(ctx.arrayid().getChild(2).getText());
-        VarType type = variables.get(ID);
-        if (type == null) {
-            variables.put(ID, VarType.DOUBLE);
-            arrays.put(ID, size);
-            LLVMGenerator.declareArrayDouble(ID, size);
+            if (arrayType.equals("int")) {
+                variables.put(ID, VarType.INT);
+                arrays.put(ID, size);
+                LLVMGenerator.declareArrayInt(ID, size);
+            } else if(arrayType.equals("double")) {
+                variables.put(ID, VarType.DOUBLE);
+                arrays.put(ID, size);
+                LLVMGenerator.declareArrayDouble(ID, size);
+            }
         } else {
             StringBuilder msg = new StringBuilder();
             msg.append("variable \"").append(ID).append("\" was declared before");
