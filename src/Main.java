@@ -8,7 +8,7 @@ public class Main {
             System.exit(-1);
         }
 
-        ANTLRFileStream input = new ANTLRFileStream(args[0]);
+        CharStream input = CharStreams.fromFileName(args[0]);
 
         OwnLanguageLexer lexer = new OwnLanguageLexer(input);
 
