@@ -6,6 +6,7 @@ import java.util.Stack;
 public class LLVMActions extends OwnLanguageBaseListener {
     private Map<String, VarType> variables = new HashMap<String, VarType>();
     private Map<String, Integer> arrays = new HashMap<String, Integer>();
+    private Map<String, String> strings = new HashMap<String, String>();
     private Stack<Value> stack = new Stack<Value>();
 
     @Override
@@ -25,6 +26,9 @@ public class LLVMActions extends OwnLanguageBaseListener {
             } else if(variableType.equals("double")) {
                 variables.put(ID, VarType.DOUBLE);
                 LLVMGenerator.declareDouble(ID);
+            } else if(variableType.equals("string")) {
+                variables.put(ID, VarType.STRING);
+                strings.put(ID, null);
             }
         } else {
             StringBuilder msg = new StringBuilder();
@@ -35,7 +39,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
 
     @Override
     public void exitDeclareArray(OwnLanguageParser.DeclareArrayContext ctx) {
-        String arrayType = ctx.type().getChild(0).getText();
+        String arrayType = ctx.numType().getChild(0).getText();
         String ID = ctx.arrayid().getChild(0).getText();
         int size = Integer.parseInt(ctx.arrayid().getChild(2).getText());
         VarType type = variables.get(ID);
@@ -58,7 +62,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
 
     @Override
     public void exitInitialize(OwnLanguageParser.InitializeContext ctx) {
-        String variableType = ctx.type().getChild(0).getText();
+        String variableType = ctx.numType().getChild(0).getText();
         String ID = ctx.ID().getText();
         Value v = stack.pop();
         if (variables.get(ID) == null) {

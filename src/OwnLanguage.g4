@@ -4,18 +4,22 @@ prog:		( stat? SEMICOLON )*
 	;
 
 stat:		declaration				#declare
-		| type ID EQ expr0			#initialize
+		| numType ID EQ expr0			#initialize
 		| assignment				#assign
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
 		| read_stat				#read
 	;
 
-type:		INT_KW
+type:		numType
+		| STRING_KW
+	;
+
+numType:	INT_KW
 		| DOUBLE_KW
 	;
 
 declaration:	type ID					#declareVariable
-		| type arrayid				#declareArray
+		| numType arrayid			#declareArray
 	;
 
 assignment:	ID EQ expr0				#assignId
@@ -76,6 +80,9 @@ INT_KW:		'int'
 DOUBLE_KW:	'double'
 	;
 
+STRING_KW:	'string'
+	;
+
 ID:		('a'..'z'|'A'..'Z')+
 	;
 
@@ -83,6 +90,9 @@ DOUBLE:		'-'?'0'..'9'+'.''0'..'9'+
 	;
 
 INT:		'-'?'0'..'9'+
+	;
+
+STRING:	'"' ( ~('\\'|'"') )* '"'
 	;
 
 EQ:		'='

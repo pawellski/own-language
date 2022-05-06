@@ -1,4 +1,5 @@
 public enum VarType {
     INT,
-    DOUBLE
+    DOUBLE,
+    STRING
 }
