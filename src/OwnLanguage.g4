@@ -5,8 +5,7 @@ prog:		( stat? SEMICOLON )*
 
 stat:		type ID					#declareVariable
 		| type arrayid				#declareArray
-		| INT_KW ID EQ expr0			#initializeInt
-		| DOUBLE_KW ID EQ expr0			#initializeDouble
+		| type ID EQ expr0			#initialize
 		| ID EQ expr0				#assignId
 		| arrayid EQ expr0			#assignArrayId
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print

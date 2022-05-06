@@ -57,38 +57,23 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
-    public void exitInitializeInt(OwnLanguageParser.InitializeIntContext ctx) {
+    public void exitInitialize(OwnLanguageParser.InitializeContext ctx) {
+        String variableType = ctx.type().getChild(0).getText();
         String ID = ctx.ID().getText();
         Value v = stack.pop();
         if (variables.get(ID) == null) {
-            if (v.getType() == VarType.INT) {
+            if (v.getType() == VarType.INT && variableType.equals("int")) {
                 variables.put(ID, VarType.INT);
                 LLVMGenerator.declareInt(ID);
                 LLVMGenerator.assignInt(ID, v.getName());
-            } else {
-                StringBuilder msg = new StringBuilder();
-                msg.append("incorrect value assign to \"").append(ID)
-                    .append("\" which is INT");
-                error(ctx.getStart().getLine(), msg.toString());
-            }
-        } else {
-            error(ctx.getStart().getLine(), "variable \"" + ID + "\" was declared before");
-        }
-    }
-
-    @Override
-    public void exitInitializeDouble(OwnLanguageParser.InitializeDoubleContext ctx) {
-        String ID = ctx.ID().getText();
-        Value v = stack.pop();
-        if (variables.get(ID) == null) {
-            if (v.getType() == VarType.DOUBLE) {
+            } else if (v.getType() == VarType.DOUBLE && variableType.equals("double")) {
                 variables.put(ID, VarType.DOUBLE);
                 LLVMGenerator.declareDouble(ID);
                 LLVMGenerator.assignDouble(ID, v.getName());
             } else {
                 StringBuilder msg = new StringBuilder();
                 msg.append("incorrect value assign to \"").append(ID)
-                    .append("\" which is DOUBLE");
+                    .append("\" variable");
                 error(ctx.getStart().getLine(), msg.toString());
             }
         } else {
