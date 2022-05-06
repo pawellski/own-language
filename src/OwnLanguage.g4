@@ -3,18 +3,27 @@ grammar OwnLanguage;
 prog:		( stat? SEMICOLON )* 
 	;
 
-stat:		type ID					#declareVariable
-		| type arrayid				#declareArray
+stat:		declaration				#declare
 		| type ID EQ expr0			#initialize
-		| ID EQ expr0				#assignId
-		| arrayid EQ expr0			#assignArrayId
+		| assignment				#assign
 		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
-		| READ_KW OPEN_BR ID CLOSE_BR		#readId
-		| READ_KW OPEN_BR arrayid CLOSE_BR	#readArrayId
+		| read_stat				#read
 	;
 
 type:		INT_KW
 		| DOUBLE_KW
+	;
+
+declaration:	type ID					#declareVariable
+		| type arrayid				#declareArray
+	;
+
+assignment:	ID EQ expr0				#assignId
+		| arrayid EQ expr0			#assignArrayId
+	;
+
+read_stat:	READ_KW OPEN_BR ID CLOSE_BR		#readId
+		| READ_KW OPEN_BR arrayid CLOSE_BR	#readArrayId
 	;
 
 expr0:		expr1					#single0
