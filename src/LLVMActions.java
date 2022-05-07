@@ -135,6 +135,8 @@ public class LLVMActions extends OwnLanguageBaseListener {
                     LLVMGenerator.assignInt(ID, v.getName());
                 else if (type == VarType.DOUBLE)
                     LLVMGenerator.assignDouble(ID, v.getName());
+                else if (type == VarType.STRING)
+                    strings.put(ID, v.getName());
             } else {
                 StringBuilder msg = new StringBuilder();
                 msg.append("incorrect assign - variable \"").append(ID).append("\" is ")
@@ -196,6 +198,10 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 LLVMGenerator.loadDouble(ID);
                 String reg = "%" + Integer.toString(LLVMGenerator.getReg());
                 stack.push( new Value(reg, type));
+            } else if (type == VarType.STRING) {
+                String value = strings.get(ID);
+                value = (value != null) ? value : "";
+                stack.push( new Value(value, type));
             }
         } else {
             StringBuilder msg = new StringBuilder();
@@ -203,6 +209,12 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 .append("\" was not declared before");
             error(ctx.getStart().getLine(), msg.toString());
         }
+    }
+
+    @Override
+    public void exitString(OwnLanguageParser.StringContext ctx) {
+        String str = ctx.STRING().getText();
+        stack.push( new Value(str.substring(1, str.length() - 1), VarType.STRING));
     }
 
     @Override
@@ -300,6 +312,9 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 LLVMGenerator.addDouble(v1.getName(), v2.getName());
                 String valueName = "%" + LLVMGenerator.getReg();
                 stack.push( new Value(valueName, VarType.DOUBLE) );
+            } else if (v1.getType() == VarType.STRING) {
+                String newStr = v2.getName() + v1.getName();
+                stack.push(new Value(newStr, VarType.STRING));
             }
         }  else {
             StringBuilder msg = new StringBuilder();

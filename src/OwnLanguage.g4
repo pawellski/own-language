@@ -43,6 +43,7 @@ expr1:		expr2					#single1
 expr2:		int_val					#intval
 		| double_val				#doubleval
 		| ID					#id
+		| STRING				#string
 		| arrayid				#arrayId
 		| OPEN_BR expr0 CLOSE_BR		#brackets
 	;
