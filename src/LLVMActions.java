@@ -66,7 +66,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
 
     @Override
     public void exitInitialize(OwnLanguageParser.InitializeContext ctx) {
-        String variableType = ctx.numType().getChild(0).getText();
+        String variableType = ctx.type().getChild(0).getText();
         String ID = ctx.ID().getText();
         Value v = stack.pop();
         if (variables.get(ID) == null) {
@@ -78,6 +78,9 @@ public class LLVMActions extends OwnLanguageBaseListener {
                 variables.put(ID, VarType.DOUBLE);
                 LLVMGenerator.declareDouble(ID);
                 LLVMGenerator.assignDouble(ID, v.getName());
+            } else if (v.getType() == VarType.STRING && variableType.equals("string")) {
+                variables.put(ID, VarType.STRING);
+                strings.put(ID, v.getName());
             } else {
                 StringBuilder msg = new StringBuilder();
                 msg.append("incorrect value assign to \"").append(ID)

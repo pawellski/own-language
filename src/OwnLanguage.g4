@@ -4,7 +4,7 @@ prog:		( stat? SEMICOLON )*
 	;
 
 stat:		declaration				#declare
-		| numType ID EQ expr0			#initialize
+		| type ID EQ expr0			#initialize
 		| assignment				#assign
 		| printType OPEN_BR printval CLOSE_BR	#print
 		| read_stat				#read
