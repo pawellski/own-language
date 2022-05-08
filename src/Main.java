@@ -18,6 +18,7 @@ public class Main {
         ParseTree tree = parser.prog();
 
         ParseTreeWalker walker = new ParseTreeWalker();
+        LLVMGenerator.init();
         walker.walk(new LLVMActions(), tree);
     }
 

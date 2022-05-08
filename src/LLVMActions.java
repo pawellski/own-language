@@ -1,6 +1,9 @@
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class LLVMActions extends OwnLanguageBaseListener {
@@ -8,6 +11,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
     private Map<String, Integer> arrays = new HashMap<String, Integer>();
     private Map<String, String> strings = new HashMap<String, String>();
     private Stack<Value> stack = new Stack<Value>();
+    private List<Value> prints = new ArrayList<Value>();
 
     @Override
     public void exitProg(OwnLanguageParser.ProgContext ctx) {
@@ -392,17 +396,30 @@ public class LLVMActions extends OwnLanguageBaseListener {
 
     @Override
     public void exitPrint(OwnLanguageParser.PrintContext ctx) {
-        Value v = stack.pop();
-        if (v.getType() != null) {
-            if (v.getType() == VarType.INT) {
-                LLVMGenerator.printfInt(v.getName());
+        Collections.reverse(prints);
+        for (Value v : prints) {
+            if (v.getType() != null) {
+                if (v.getType() == VarType.INT) {
+                    LLVMGenerator.printfInt(v.getName());
+                } else if (v.getType() == VarType.DOUBLE) {
+                    LLVMGenerator.printfDouble(v.getName());
+                } else if (v.getType() == VarType.STRING) {
+                    String str = v.getName();
+                    String newStr = str.replace("\\n", "\\0A");
+                    int len = newStr.length() - 2 * (newStr.length() - str.length());
+                    LLVMGenerator.printfString(newStr, len);
+                }
+            } else {
+                error(ctx.getStart().getLine(), "problem occurs");
             }
-            else if (v.getType() == VarType.DOUBLE) {
-                LLVMGenerator.printfDouble(v.getName());
-            }
-        } else {
-            error(ctx.getStart().getLine(), "problem occurs");
         }
+        prints.clear();
+    }
+
+    @Override
+    public void exitPrintval(OwnLanguageParser.PrintvalContext ctx) {
+        Value v = stack.pop();
+        prints.add(v);
     }
 
     @Override

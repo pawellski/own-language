@@ -12,7 +12,6 @@ public class LLVMGenerator {
     }
 
     public static String generate() {
-        configureHeader();
         StringBuilder text = new StringBuilder();
         text.append(headerText.toString());
         text.append("define i32 @main() nounwind{\n");
@@ -28,6 +27,10 @@ public class LLVMGenerator {
             .append("@strpd = constant [4 x i8] c\"%f\\0A\\00\"\n")
             .append("@strs = constant [3 x i8] c\"%d\\00\"\n")
             .append("@strsd = constant [4 x i8] c\"%lf\\00\"\n");
+    }
+
+    public static void init() {
+        configureHeader();
     }
 
     public static void declareInt(String id) {
@@ -160,6 +163,15 @@ public class LLVMGenerator {
         mainText.append("%").append(reg)
             .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double ")
             .append(id).append(")\n");
+    }
+
+    public static void printfString(String text, int len) {
+        reg++;
+        String type = "[" + (len+1) + " x i8]";
+        headerText.append("@str").append(reg).append(" = constant ").append(type).append(" c\"").append(text)
+            .append("\\00\"\n");
+        mainText.append("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ( ").append(type).append(", ")
+            .append(type).append("* @str").append(reg).append(", i32 0, i32 0))\n");
     }
 
     public static void scanfInt(String id) {

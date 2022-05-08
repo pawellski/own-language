@@ -6,7 +6,7 @@ prog:		( stat? SEMICOLON )*
 stat:		declaration				#declare
 		| numType ID EQ expr0			#initialize
 		| assignment				#assign
-		| PRINT_KW OPEN_BR expr0 CLOSE_BR	#print
+		| PRINT_KW OPEN_BR printval CLOSE_BR	#print
 		| read_stat				#read
 	;
 
@@ -60,6 +60,10 @@ double_val:	DOUBLE					#double
 		| conv_todouble ID			#idToDouble
 	;
 
+printval:	expr0
+		| expr0 COMMA printval
+	;
+
 arrayid:	ID OPEN_SBR INT CLOSE_SBR
 	;
 
@@ -93,7 +97,7 @@ DOUBLE:		'-'?'0'..'9'+'.''0'..'9'+
 INT:		'-'?'0'..'9'+
 	;
 
-STRING:	'"' ( ~('\\'|'"') )* '"'
+STRING:	'"' ( ~('"') )* '"'
 	;
 
 EQ:		'='
@@ -121,6 +125,9 @@ OPEN_SBR:	'['
 	;
 
 CLOSE_SBR:	']'
+	;
+
+COMMA:		','
 	;
 
 SEMICOLON:	';'
