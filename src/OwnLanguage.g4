@@ -6,7 +6,7 @@ prog:		( stat? SEMICOLON )*
 stat:		declaration				#declare
 		| numType ID EQ expr0			#initialize
 		| assignment				#assign
-		| PRINT_KW OPEN_BR printval CLOSE_BR	#print
+		| printType OPEN_BR printval CLOSE_BR	#print
 		| read_stat				#read
 	;
 
@@ -16,6 +16,10 @@ type:		numType
 
 numType:	INT_KW
 		| DOUBLE_KW
+	;
+
+printType:	PRINT_KW
+		| PRINTLN_KW
 	;
 
 declaration:	type ID					#declareVariable
@@ -79,6 +83,9 @@ READ_KW:	'read'
 PRINT_KW:	'print' 
 	;
 
+PRINTLN_KW:	'println'
+	;
+
 INT_KW:		'int'
 	;
 
@@ -97,7 +104,7 @@ DOUBLE:		'-'?'0'..'9'+'.''0'..'9'+
 INT:		'-'?'0'..'9'+
 	;
 
-STRING:	'"' ( ~('"') )* '"'
+STRING:		'"' ( ~('"') )* '"'
 	;
 
 EQ:		'='

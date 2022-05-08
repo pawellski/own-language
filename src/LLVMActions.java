@@ -396,6 +396,7 @@ public class LLVMActions extends OwnLanguageBaseListener {
 
     @Override
     public void exitPrint(OwnLanguageParser.PrintContext ctx) {
+        String printType = ctx.printType().getChild(0).getText();
         Collections.reverse(prints);
         for (Value v : prints) {
             if (v.getType() != null) {
@@ -412,6 +413,9 @@ public class LLVMActions extends OwnLanguageBaseListener {
             } else {
                 error(ctx.getStart().getLine(), "problem occurs");
             }
+        }
+        if (printType.equals("println")) {
+            LLVMGenerator.printfString("\\0A", 1);
         }
         prints.clear();
     }

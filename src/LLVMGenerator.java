@@ -154,14 +154,14 @@ public class LLVMGenerator {
     public static void printfInt(String id) {
         reg++;
         mainText.append("%").append(reg)
-            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 ")
+            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @strs, i32 0, i32 0), i32 ")
             .append(id).append(")\n");
     }
 
     public static void printfDouble(String id) {
         reg++;
         mainText.append("%").append(reg)
-            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpd, i32 0, i32 0), double ")
+            .append(" = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strsd, i32 0, i32 0), double ")
             .append(id).append(")\n");
     }
 
