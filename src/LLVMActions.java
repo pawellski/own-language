@@ -311,6 +311,86 @@ public class LLVMActions extends OwnLanguageBaseListener {
     }
 
     @Override
+    public void exitArrayIdToInt(OwnLanguageParser.ArrayIdToIntContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int index = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        VarType type = variables.get(ID);
+        if (type != null) {
+            int size = arrays.get(ID);
+            if (index >= 0 && index < size) {
+                if (type == VarType.INT) {
+                    LLVMGenerator.getIntFromArray(ID, size, index);
+                    LLVMGenerator.loadInt(Integer.toString(LLVMGenerator.getReg()));
+                    String valueName = "%" + Integer.toString(LLVMGenerator.getReg());
+                    stack.push( new Value(valueName, VarType.INT) );
+                } else if (type == VarType.DOUBLE) {
+                    LLVMGenerator.getDoubleFromArray(ID, size, index);
+                    LLVMGenerator.loadDouble(Integer.toString(LLVMGenerator.getReg()));
+                    String loadedValue = "%" + Integer.toString(LLVMGenerator.getReg());
+                    LLVMGenerator.fptosi(loadedValue);
+                    String valueName = "%" + LLVMGenerator.getReg();
+                    stack.push( new Value(valueName, VarType.INT) );
+                } else {
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("mismatch type of variable \"").append(ID)
+                        .append("\" which is ").append(type);
+                    error(ctx.getStart().getLine(), msg.toString());
+                }
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("index ").append(index).append(" out of bound \"")
+                    .append(ID).append("[").append(size).append("]\" array");
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("[]\" was not declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+    @Override
+    public void exitArrayIdToDouble(OwnLanguageParser.ArrayIdToDoubleContext ctx) {
+        String ID = ctx.arrayid().getChild(0).getText();
+        int index = Integer.parseInt(ctx.arrayid().getChild(2).getText());
+        VarType type = variables.get(ID);
+        if (type != null) {
+            int size = arrays.get(ID);
+            if (index >= 0 && index < size) {
+                if (type == VarType.INT) {
+                    LLVMGenerator.getIntFromArray(ID, size, index);
+                    LLVMGenerator.loadInt(Integer.toString(LLVMGenerator.getReg()));
+                    String loadedValue = "%" + Integer.toString(LLVMGenerator.getReg());
+                    LLVMGenerator.sitofp(loadedValue);
+                    String valueName = "%" + LLVMGenerator.getReg();
+                    stack.push( new Value(valueName, VarType.DOUBLE) );
+                } else if (type == VarType.DOUBLE) {
+                    LLVMGenerator.getDoubleFromArray(ID, size, index);
+                    LLVMGenerator.loadDouble(Integer.toString(LLVMGenerator.getReg()));
+                    String valueName = "%" + Integer.toString(LLVMGenerator.getReg());
+                    stack.push( new Value(valueName, VarType.DOUBLE) );
+                } else {
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("mismatch type of variable \"").append(ID)
+                        .append("\" which is ").append(type);
+                    error(ctx.getStart().getLine(), msg.toString());
+                }
+            } else {
+                StringBuilder msg = new StringBuilder();
+                msg.append("index ").append(index).append(" out of bound \"")
+                    .append(ID).append("[").append(size).append("]\" array");
+                error(ctx.getStart().getLine(), msg.toString());
+            }
+        } else {
+            StringBuilder msg = new StringBuilder();
+            msg.append("variable \"").append(ID)
+                .append("[]\" was not declared before");
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+    }
+
+    @Override
     public void exitAdd(OwnLanguageParser.AddContext ctx) {
         Value v1 = stack.pop();
         Value v2 = stack.pop();

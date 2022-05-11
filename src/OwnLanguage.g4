@@ -56,12 +56,14 @@ int_val:	INT					#int
 		| conv_toint INT			#intToInt
 		| conv_toint DOUBLE			#doubleToInt
 		| conv_toint ID				#idToInt
+		| conv_toint arrayid			#arrayIdToInt
 	;
 
 double_val:	DOUBLE					#double
 		| conv_todouble INT			#intToDouble
 		| conv_todouble DOUBLE			#doubleToDouble
 		| conv_todouble ID			#idToDouble
+		| conv_todouble arrayid			#arrayIdToDouble
 	;
 
 printval:	expr0
