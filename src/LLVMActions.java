@@ -561,6 +561,58 @@ public class LLVMActions extends OwnLanguageBaseListener {
         }
     }
 
+    @Override
+    public void enterBlockif(OwnLanguageParser.BlockifContext ctx) {
+        LLVMGenerator.startIf();
+    }
+
+    @Override
+    public void exitBlockif(OwnLanguageParser.BlockifContext ctx) {
+        LLVMGenerator.endIf();
+    }
+
+    @Override
+    public void exitCond(OwnLanguageParser.CondContext ctx) {
+        Value v1 = stack.pop();
+        Value v2 = stack.pop();
+        if (v1.getType() != v2.getType()) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("comparsion type mismatch - ").append(v1.getType())
+                .append(" and ").append(v2.getType());
+            error(ctx.getStart().getLine(), msg.toString());
+        }
+
+        String operation = ctx.comp().getChild(0).getText();
+        if (operation.equals("=="))
+            operation = "eq";
+        else if (operation.equals("!="))
+            operation = "ne";
+        else if (operation.equals(">="))
+            operation = "ge";
+        else if (operation.equals("<="))
+            operation = "le";
+        else if (operation.equals(">"))
+            operation = "gt";
+        else if (operation.equals("<"))
+            operation = "lt";
+
+
+        if (v1.getType() == VarType.INT) {
+            if (!operation.equals("eq") && !operation.equals("ne"))
+                operation = "s" + operation;
+            LLVMGenerator.compareInt(v2.getName(), v1.getName(), operation);
+        } else if (v1.getType() == VarType.DOUBLE) {
+            if (operation.equals("ne"))
+                operation = "une";
+            else
+                operation = "o" + operation;
+            LLVMGenerator.compareDouble(v2.getName(), v1.getName(), operation);
+        } else {
+            StringBuilder msg = new StringBuilder();
+            error(ctx.getStart().getLine(), "string comparsion not supported");
+        }
+    }
+
     private void error(int line, String msg) {
        System.err.println("Error! Line " + line + ": " + msg);
        System.exit(1);
