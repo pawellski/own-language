@@ -1,7 +1,11 @@
+import java.util.Stack;
+
 public class LLVMGenerator {
     private static StringBuilder headerText = new StringBuilder();
     private static StringBuilder mainText = new StringBuilder();
+    private static Stack<Integer> brStack = new Stack<Integer>();
     private static int reg = 0;
+    private static int br = 0;
 
     public static void incReg() {
         reg += 1;
@@ -182,6 +186,31 @@ public class LLVMGenerator {
         mainText.append("%").append(reg)
             .append(" = getelementptr inbounds [").append(Integer.toString(size)).append(" x double], [").append(Integer.toString(size))
             .append(" x double]* %").append(id).append(", i64 0, i64 ").append(Integer.toString(index)).append("\n");
+    }
+
+    public static void startIf() {
+        br++;
+        mainText.append("br i1 %").append(reg).append(", label %true").append(br).append(", label %false").append(br).append("\n");
+        mainText.append("true").append(br).append(":\n");
+        brStack.push(br);
+    }
+
+    public static void endIf() {
+        int actualBr = brStack.pop();
+        mainText.append("br label %false").append(actualBr).append("\n");
+        mainText.append("false").append(actualBr).append(":\n");
+    }
+
+    public static void compareInt(String val1, String val2, String operation) {
+        reg++;
+        mainText.append("%").append(reg).append(" = icmp ").append(operation).append(" i32 ").append(val1)
+            .append(", ").append(val2).append("\n");
+    }
+
+    public static void compareDouble(String val1, String val2, String operation) {
+        reg++;
+        mainText.append("%").append(reg).append(" = fcmp ").append(operation).append(" double ").append(val1)
+            .append(", ").append(val2).append("\n");
     }
 
 }
