@@ -1,6 +1,9 @@
 grammar OwnLanguage;
 
-prog:		( stat? SEMICOLON )* 
+prog:		block
+	;
+
+block:		( stat? NEWLINE )*
 	;
 
 stat:		declaration				#declare
@@ -8,6 +11,8 @@ stat:		declaration				#declare
 		| assignment				#assign
 		| printType OPEN_BR printval CLOSE_BR	#print
 		| read_stat				#read
+		| IF_KW OPEN_BR cond CLOSE_BR
+		  OPEN_CBR blockif CLOSE_CBR		#if
 	;
 
 type:		numType
@@ -32,6 +37,20 @@ assignment:	ID EQ expr0				#assignId
 
 read_stat:	READ_KW OPEN_BR ID CLOSE_BR		#readId
 		| READ_KW OPEN_BR arrayid CLOSE_BR	#readArrayId
+	;
+
+blockif:	block
+	;
+
+cond:		expr0 comp expr0
+	;
+
+comp:		'=='
+		| '!='
+		| '>='
+		| '<='
+		| '>'
+		| '<'
 	;
 
 expr0:		expr1					#single0
@@ -97,6 +116,9 @@ DOUBLE_KW:	'double'
 STRING_KW:	'string'
 	;
 
+IF_KW:		'if'
+	;
+
 ID:		('a'..'z'|'A'..'Z')+
 	;
 
@@ -136,13 +158,19 @@ OPEN_SBR:	'['
 CLOSE_SBR:	']'
 	;
 
+OPEN_CBR:	'{'
+	;
+
+CLOSE_CBR:	'}'
+	;
+
 COMMA:		','
 	;
 
 SEMICOLON:	';'
 	;
 
-WS:		(' '|'\t'|NEWLINE)+ { skip(); }
+WS:		(' '|'\t')+ { skip(); }
 	;
 
 NEWLINE:	'\r'? '\n'
