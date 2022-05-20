@@ -191,14 +191,14 @@ public class LLVMGenerator {
     public static void startIf() {
         br++;
         mainText.append("br i1 %").append(reg).append(", label %true").append(br).append(", label %false").append(br).append("\n");
-        mainText.append("true").append(br).append(":\n");
+        mainText.append("\ntrue").append(br).append(":\n");
         brStack.push(br);
     }
 
     public static void endIf() {
         int actualBr = brStack.pop();
         mainText.append("br label %false").append(actualBr).append("\n");
-        mainText.append("false").append(actualBr).append(":\n");
+        mainText.append("\nfalse").append(actualBr).append(":\n");
     }
 
     public static void compareInt(String val1, String val2, String operation) {
@@ -211,6 +211,24 @@ public class LLVMGenerator {
         reg++;
         mainText.append("%").append(reg).append(" = fcmp ").append(operation).append(" double ").append(val1)
             .append(", ").append(val2).append("\n");
+    }
+
+    public static void startWhile() {
+        br++;
+        mainText.append("br label %while").append(br).append("\n");
+        mainText.append("\nwhile").append(br).append(":\n");
+        brStack.push(br);
+    }
+
+    public static void endWhile() {
+        int actualBr = brStack.pop();
+        mainText.append("br label %while").append(actualBr).append("\n");
+        mainText.append("\nfalse").append(actualBr).append(":\n");
+    }
+
+    public static void checkCondition() {
+        mainText.append("br i1 %").append(reg).append(", label %true").append(br).append(", label %false").append(br).append("\n");
+        mainText.append("\ntrue").append(br).append(":\n");
     }
 
 }

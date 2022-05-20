@@ -13,6 +13,8 @@ stat:		declaration				#declare
 		| read_stat				#read
 		| IF_KW OPEN_BR cond CLOSE_BR
 		  OPEN_CBR blockif CLOSE_CBR		#if
+		| WHILE_KW OPEN_BR wcond CLOSE_BR
+		  OPEN_CBR blockw CLOSE_CBR		#while
 	;
 
 type:		numType
@@ -42,7 +44,13 @@ read_stat:	READ_KW OPEN_BR ID CLOSE_BR		#readId
 blockif:	block
 	;
 
+blockw:		block
+	;
+
 cond:		expr0 comp expr0
+	;
+
+wcond:		expr0 comp expr0
 	;
 
 comp:		'=='
@@ -117,6 +125,9 @@ STRING_KW:	'string'
 	;
 
 IF_KW:		'if'
+	;
+
+WHILE_KW:	'while'
 	;
 
 ID:		('a'..'z'|'A'..'Z')+
